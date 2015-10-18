@@ -63,7 +63,7 @@ class CelllarAutomaton(QGraphicsItem):
             return False
         p = []
         for i in range(8):
-            p.append(n & 0b1) 
+            p.append(n & 0b1)
             n >>= 1
 
         self.board[self.pos+1][0] = p[(self.board[self.pos][0]<<1) + self.board[self.pos][1]]
@@ -104,14 +104,6 @@ class MainWindow(QWidget):
             ruleLayout.addWidget(ruleEdit, 1,7-i)
             self.ruleEdits.append(ruleEdit)
 
-        validator2 = QIntValidator(0,255)
-        self.rule10Edit = QLineEdit()
-        self.rule10Edit.setValidator(validator2)
-        self.rule10Edit.textEdited.connect(self.update_rule10)
-        rule10Layout = QHBoxLayout()
-        rule10Layout.addWidget(QLabel("Rule"))
-        rule10Layout.addWidget(self.rule10Edit)
-
         self.resetButton = QPushButton("&Reset")
         self.resetButton.clicked.connect(self.reset)
         self.randomInitButton = QPushButton("&Random init")
@@ -135,7 +127,6 @@ class MainWindow(QWidget):
         propertyLayout = QVBoxLayout()
         propertyLayout.setAlignment(Qt.AlignTop)
         propertyLayout.addLayout(ruleLayout)
-        propertyLayout.addLayout(rule10Layout)
         propertyLayout.addLayout(buttonLayout)
 
         mainLayout = QHBoxLayout()
@@ -146,8 +137,6 @@ class MainWindow(QWidget):
         self.setLayout(mainLayout)
         self.setWindowTitle("Cellular Automaton")
         self.updating_rule = False
-        self.rule10Edit.setText("90")
-        self.update_rule10()
         self.timer = None
 
     def update_rule(self):
@@ -158,7 +147,6 @@ class MainWindow(QWidget):
             if n == "": return
             rule = (rule << 1) + int(n)
         self.updating_rule = True
-        self.rule10Edit.setText(str(rule))
         self.updating_rule = False
 
     def update_rule10(self):
