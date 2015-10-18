@@ -72,16 +72,6 @@ class MainWindow(QWidget):
         self.updating_rule = True
         self.updating_rule = False
 
-    def update_rule10(self):
-        n = self.rule10Edit.text()
-        if n == "": return
-        rule = int(n)
-        self.updating_rule = True
-        for i in range(7,-1,-1):
-            self.ruleEdits[i].setText(str(rule & 0b1))
-            rule >>= 1
-        self.updating_rule = False
-
     def auto(self):
         self.timer = QTimer()
         self.timer.setInterval(100)
