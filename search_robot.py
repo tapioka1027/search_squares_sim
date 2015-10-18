@@ -42,6 +42,12 @@ class search_robot(QGraphicsItem):
         for x in range(self.NW):
             painter.drawLine(x*self.size, 0, x*self.size, self.height)
 
+        painter.setPen(Qt.black)
+        font = painter.font()
+        font.setPointSize(20)
+        font.setBold(True)
+        painter.setFont(font)
+
         for y in range(self.NH):
             for x in range(self.NW):
                 #if self.board[y][x] == 1:
@@ -51,6 +57,10 @@ class search_robot(QGraphicsItem):
                 elif self.colormap[y][x] == 0.5:
                     painter.setBrush(Qt.gray)
                     painter.drawRect(self.size*x, self.size*y, self.size, self.size)
+                elif self.colormap[y][x] == 2:
+                    painter.drawText(self.size*x+10, self.size*y+10, self.size, self.size, self.size, 'S')
+                elif self.colormap[y][x] == 3:
+                    painter.drawText(self.size*x+10, self.size*y+10, self.size, self.size, self.size, 'G')
 
     def boundingRect(self):
         return QRectF(0,0,self.width,self.height)
