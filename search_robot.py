@@ -37,11 +37,13 @@ class search_robot(QGraphicsItem):
         self.colormap.append([0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0])
         self.colormap.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5, 0, 0, 0, 0, 0, 0])
 
+        self.agent = UniformCostAgent(colormap=self.colormap)
+
     def paint(self, painter, option, widget):
         painter.setPen(QColor(220,220,220))
-        for y in range(self.NH):
+        for y in range(self.NH + 1):
             painter.drawLine(0, y*self.size, self.width, y*self.size)
-        for x in range(self.NW):
+        for x in range(self.NW + 1):
             painter.drawLine(x*self.size, 0, x*self.size, self.height)
 
         painter.setPen(Qt.black)
