@@ -20,6 +20,21 @@ class search_robot(QGraphicsItem):
         self.board[0][self.NW//2] = 1
         self.pos = 0
 
+        #make map
+        self.colormap = []
+        self.colormap.append([0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0])
+        self.colormap.append([0, 0.5, 0.5, 0.5, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0.5])
+        self.colormap.append([0, 0.5, 0, 0.5, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0.5])
+        self.colormap.append([0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0.5])
+        self.colormap.append([0.5, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        self.colormap.append([0.5, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0])
+        self.colormap.append([0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0])
+        self.colormap.append([0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0])
+        self.colormap.append([0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0])
+        self.colormap.append([0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0])
+        self.colormap.append([0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0])
+        self.colormap.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5, 0, 0, 0, 0, 0, 0])
+
     def paint(self, painter, option, widget):
         painter.setPen(QColor(220,220,220))
         for y in range(self.NH):
@@ -27,10 +42,14 @@ class search_robot(QGraphicsItem):
         for x in range(self.NW):
             painter.drawLine(x*self.size, 0, x*self.size, self.height)
 
-        painter.setBrush(Qt.blue)
         for y in range(self.NH):
             for x in range(self.NW):
-                if self.board[y][x] == 1:
+                #if self.board[y][x] == 1:
+                if self.colormap[y][x] == 1:
+                    painter.setBrush(Qt.black)
+                    painter.drawRect(self.size*x, self.size*y, self.size, self.size)
+                elif self.colormap[y][x] == 0.5:
+                    painter.setBrush(Qt.gray)
                     painter.drawRect(self.size*x, self.size*y, self.size, self.size)
 
     def boundingRect(self):
