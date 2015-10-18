@@ -1,83 +1,12 @@
 import random
 
+from search_robot import *
+
 from PyQt5.QtCore import (QLineF, QPointF, QRectF, Qt, QTimer)
 from PyQt5.QtGui import (QBrush, QColor, QPainter, QIntValidator)
 from PyQt5.QtWidgets import (QApplication, QWidget, QGraphicsView, QGraphicsScene, QGraphicsItem,
                              QGridLayout, QVBoxLayout, QHBoxLayout,
                              QLabel, QLineEdit, QPushButton)
-
-class CelllarAutomaton(QGraphicsItem):
-    def __init__(self, width=500, height=500, size=5):
-        super(CelllarAutomaton, self).__init__()
-        self.width = width
-        self.height = height
-        self.size = size
-        self.NH = self.height//size
-        self.NW = self.width//size
-        self.board = []
-        for y in range(self.NH):
-            self.board.append([0] * self.NW)
-        self.board[0][self.NW//2] = 1
-        self.pos = 0
-
-    def reset(self):
-        for y in range(self.NH):
-            for x in range(self.NW):
-                self.board[y][x] = 0
-        self.board[0][self.NW//2] = 1
-        self.pos = 0
-        self.update()
-
-    def randomInit(self):
-        for y in range(self.NH):
-            for x in range(self.NW):
-                self.board[y][x] = 0
-        for x in range(self.NW):
-            self.board[0][x] = int(random.random() < 0.2)
-        self.pos = 0
-        self.update()
-
-    def paint(self, painter, option, widget):
-        painter.setPen(QColor(220,220,220))
-        for y in range(self.NH):
-            painter.drawLine(0, y*self.size, self.width, y*self.size)
-        for x in range(self.NW):
-            painter.drawLine(x*self.size, 0, x*self.size, self.height)
-
-        painter.setBrush(Qt.black)
-        for y in range(self.NH):
-            for x in range(self.NW):
-                if self.board[y][x] == 1:
-                    painter.drawRect(self.size*x, self.size*y, self.size, self.size)
-
-    def do_prev(self):
-        if self.pos == 0:
-            return
-        for x in range(self.NW):
-            self.board[self.pos][x] = 0
-        self.pos -= 1
-        self.update()
-
-    def do_next(self, n):
-        if self.pos+1 >= self.NH:
-            return False
-        p = []
-        for i in range(8):
-            p.append(n & 0b1)
-            n >>= 1
-
-        self.board[self.pos+1][0] = p[(self.board[self.pos][0]<<1) + self.board[self.pos][1]]
-        self.board[self.pos+1][self.NW-1] = p[(self.board[self.pos][self.NW-2]<<1) + self.board[self.pos][self.NW-1]]
-        for x in range(1,self.NW-1):
-            self.board[self.pos+1][x] = p[(self.board[self.pos][x-1]<<2)
-                                            + (self.board[self.pos][x]<<1)
-                                            + (self.board[self.pos][x+1])]
-        self.pos += 1
-        self.update()
-        return True
-
-    def boundingRect(self):
-        return QRectF(0,0,self.width,self.height)
 
 class MainWindow(QWidget):
     def __init__(self, parent=None):
@@ -105,17 +34,11 @@ class MainWindow(QWidget):
             self.ruleEdits.append(ruleEdit)
 
         self.resetButton = QPushButton("&Reset")
-        self.resetButton.clicked.connect(self.reset)
         self.randomInitButton = QPushButton("&Random init")
-        self.randomInitButton.clicked.connect(self.randomInit)
         self.nextButton = QPushButton("&Next")
-        self.nextButton.clicked.connect(self.do_next)
         self.prevButton = QPushButton("&Prev")
-        self.prevButton.clicked.connect(self.do_prev)
         self.autoButton = QPushButton("&Auto")
-        self.autoButton.clicked.connect(self.auto)
         self.stopButton = QPushButton("&Stop")
-        self.stopButton.clicked.connect(self.stop)
         buttonLayout = QVBoxLayout()
         buttonLayout.addWidget(self.resetButton)
         buttonLayout.addWidget(self.randomInitButton)
@@ -158,19 +81,6 @@ class MainWindow(QWidget):
             self.ruleEdits[i].setText(str(rule & 0b1))
             rule >>= 1
         self.updating_rule = False
-
-    def do_next(self):
-        n = self.rule10Edit.text()
-        return self.celluarAutomaton.do_next(int(n))
-
-    def do_prev(self):
-        self.celluarAutomaton.do_prev()
-
-    def reset(self):
-        self.celluarAutomaton.reset()
-
-    def randomInit(self):
-        self.celluarAutomaton.randomInit()
 
     def auto(self):
         self.timer = QTimer()
