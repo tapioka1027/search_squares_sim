@@ -22,21 +22,39 @@ class UniformCostAgent():
         self.dest_y = goaly
         self.searchmode = mode
 
+        self.now_cost = 0
         self.qu = Queue()
         self.routemap = []
         for y in range(12):
             self.routemap.append([-1] * 17)
         self.routemap[starty][startx] = 0
-        self.colormap = colormap
+        self.costmap = colormap
+        for y in range(self.costmap):
+            for x in range(self.costmap[0]):
+                if self.costmap[y][x] == 0:
+                    self.costmap[y][x] == 1
+                elif self.costmap[y][x] == 0.5:
+                    self.costmap[y][x] == 3
+                elif self.costmap[y][x] == 1:
+                    self.costmap[y][x] == -1
+        self.costmap[starty][startx] = -1
 
         self.do_next()
         #print(self.colormap)
 
-    def do_next(self):
+    def update_qu(self):
         searchlist = ()
         chooselist = [SearchList.UDLR, SearchList.LRUD, SearchList.RLDU]
         if self.searchmode == SearchList.rand:
             searchlist = random.choice(chooselist).value
         else:
             searchlist = self.searchmode.value
-    
+        for i in range(searchlist):
+            if i == 0:
+                if self.now_y > 1 and self.costmap[now_y - 1][now_x] != -1:
+                    self.qu.put([now_x, now_y - 1, now_cost])
+
+    def do_next():
+        qufront = self.qu.get()
+        self.now_x = qufront_x
+        
