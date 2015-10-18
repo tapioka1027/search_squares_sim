@@ -6,9 +6,9 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QGraphicsView, QGraphicsScen
                              QGridLayout, QVBoxLayout, QHBoxLayout,
                              QLabel, QLineEdit, QPushButton)
 
-class CelllarAutomaton(QGraphicsItem):
+class search_robot(QGraphicsItem):
     def __init__(self, width=500, height=500, size=20):
-        super(CelllarAutomaton, self).__init__()
+        super(search_robot, self).__init__()
         self.width = width
         self.height = height
         self.size = size

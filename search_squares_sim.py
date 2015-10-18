@@ -14,10 +14,10 @@ class MainWindow(QWidget):
 
         self.graphicsView = QGraphicsView()
         scene = QGraphicsScene(self.graphicsView)
-        scene.setSceneRect(0, 0, 400, 400)
+        scene.setSceneRect(0, 0, 680, 480)
         self.graphicsView.setScene(scene)
-        self.celluarAutomaton = CelllarAutomaton(400,400)
-        scene.addItem(self.celluarAutomaton)
+        self.searchrobot = search_robot(680,480, 40)
+        scene.addItem(self.searchrobot)
 
         validator = QIntValidator(0,1)
         ruleLayout = QGridLayout()
@@ -58,7 +58,7 @@ class MainWindow(QWidget):
         mainLayout.addLayout(propertyLayout)
 
         self.setLayout(mainLayout)
-        self.setWindowTitle("Cellular Automaton")
+        self.setWindowTitle("Seach Squares Simulation")
         self.updating_rule = False
         self.timer = None
 
