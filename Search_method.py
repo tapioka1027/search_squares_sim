@@ -40,7 +40,8 @@ class UniformCostAgent():
                     self.costmap[y][x] == -1
         self.costmap[starty][startx] = -1
 
-        #self.do_next()
+        self.do_next()
+        print(self.qu.qsize())
         #print(self.colormap)
 
     def do_next(self):
@@ -69,5 +70,5 @@ class UniformCostAgent():
             elif i == 3:
                 templist.append((now_x + 1, now_y))
         for temppos in templist:
-            if temppos[0] >= 0 and temppos[1] >= 0 and costmap[temppos[1]][temppos[0]] != -1:
-                self.qu.put(tuple(nowcost + costmap[now_y][now_x], temppos))
+            if temppos[0] >= 0 and temppos[1] >= 0 and self.costmap[temppos[1]][temppos[0]] != -1:
+                self.qu.put((nowcost + self.costmap[now_y][now_x], temppos))
