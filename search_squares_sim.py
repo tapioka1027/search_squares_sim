@@ -37,14 +37,14 @@ class MainWindow(QWidget):
         self.randomInitButton = QPushButton("&Random init")
         self.nextButton = QPushButton("&Next")
         self.nextButton.clicked.connect(self.do_next)
-        self.prevButton = QPushButton("&Prev")
         self.autoButton = QPushButton("&Auto")
+        self.autoButton.clicked.connect(self.auto)
         self.stopButton = QPushButton("&Stop")
+        self.stopButton.clicked.connect(self.stop)
         buttonLayout = QVBoxLayout()
         buttonLayout.addWidget(self.resetButton)
         buttonLayout.addWidget(self.randomInitButton)
         buttonLayout.addWidget(self.nextButton)
-        buttonLayout.addWidget(self.prevButton)
         buttonLayout.addWidget(self.autoButton)
         buttonLayout.addWidget(self.stopButton)
 
@@ -74,7 +74,7 @@ class MainWindow(QWidget):
         self.updating_rule = False
 
     def do_next(self):
-        self.searchrobot.update_map()
+        return self.searchrobot.update_map()
 
     def auto(self):
         self.timer = QTimer()
@@ -91,10 +91,6 @@ class MainWindow(QWidget):
         if self.timer:
             self.timer.stop()
             self.timer = None
-
-    #def keyPressEvent(self, event):
-    #    key = event.key()
-    #    super(MainWindow, self).keyPressEvent(event)
 
 if __name__ == '__main__':
     import sys

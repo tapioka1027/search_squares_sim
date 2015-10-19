@@ -77,9 +77,16 @@ class search_robot(QGraphicsItem):
                         painter.drawText(self.size*x+6, self.size*y+10, self.size, self.size, self.size, str(printnum))
 
     def update_map(self):
-        while self.agent.do_next() == 0:
-            continue
-        self.update()
+        r = self.agent.do_next()
+        while r == 0:
+            r = self.agent.do_next()
+        else:
+            if r == 1:
+                self.update()
+                return True
+            else:
+                self.update()
+                return False
 
     def boundingRect(self):
         return QRectF(0,0,self.width,self.height)
