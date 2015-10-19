@@ -1,4 +1,5 @@
 import random
+import copy
 
 from Search_method import *
 
@@ -37,7 +38,7 @@ class search_robot(QGraphicsItem):
         self.colormap.append([0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0])
         self.colormap.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5, 0, 0, 0, 0, 0, 0])
 
-        self.agent = UniformCostAgent(colormap=self.colormap)
+        self.agent = UniformCostAgent(colormap=copy.deepcopy(self.colormap))
 
     def paint(self, painter, option, widget):
         painter.setPen(QColor(220,220,220))

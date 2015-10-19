@@ -1,6 +1,6 @@
 ﻿import random
 
-from queue import Queue
+from queue import PriorityQueue
 from enum import Enum
 
 class SearchList(Enum):
@@ -16,21 +16,22 @@ class SearchList(Enum):
 
 class UniformCostAgent():
     def __init__(self, mode=SearchList.rand, colormap=[], startx=3, starty=0, goalx=13, goaly=0):
-        self.now_x = startx
-        self.now_y = starty
         self.dest_x = goalx
         self.dest_y = goaly
         self.searchmode = mode
 
         self.now_cost = 0
-        self.qu = Queue()
+        self.now_num = 0
+        self.qu = PriorityQueue()
+        self.qu.put((0, (startx, starty))) #(cost, (nowx, nowy))
+
         self.routemap = []
         for y in range(12):
             self.routemap.append([-1] * 17)
         self.routemap[starty][startx] = 0
         self.costmap = colormap
-        for y in range(self.costmap):
-            for x in range(self.costmap[0]):
+        for y in range(len(self.costmap)):
+            for x in range(len(self.costmap[0])):
                 if self.costmap[y][x] == 0:
                     self.costmap[y][x] == 1
                 elif self.costmap[y][x] == 0.5:
@@ -39,22 +40,34 @@ class UniformCostAgent():
                     self.costmap[y][x] == -1
         self.costmap[starty][startx] = -1
 
-        self.do_next()
+        #self.do_next()
         #print(self.colormap)
 
-    def update_qu(self):
+    def do_next(self):
         searchlist = ()
         chooselist = [SearchList.UDLR, SearchList.LRUD, SearchList.RLDU]
+        templist = []
+        tempqu = self.qu.get()
+        nowcost = tempqu[0]
+        now_x = tempqu[1][0]
+        now_y = tempqu[1][1]
+
+        self.now_num += 1
+        self.routemap[now_y][now_x] = self.now_num
+
         if self.searchmode == SearchList.rand:
             searchlist = random.choice(chooselist).value
         else:
             searchlist = self.searchmode.value
-        for i in range(searchlist):
+        for i in searchlist:
             if i == 0:
-                if self.now_y > 1 and self.costmap[now_y - 1][now_x] != -1:
-                    self.qu.put([now_x, now_y - 1, now_cost])
-
-    def do_next():
-        qufront = self.qu.get()
-        self.now_x = qufront_x
-        
+                templist.append((now_x, now_y - 1))
+            elif i == 1:
+                templist.append((now_x, now_y + 1))
+            elif i == 2:
+                templist.append((now_x - 1, now_y))
+            elif i == 3:
+                templist.append((now_x + 1, now_y))
+        for temppos in templist:
+            if temppos[0] >= 0 and temppos[1] >= 0 and costmap[temppos[1]][temppos[0]] != -1:
+                self.qu.put(tuple(nowcost + costmap[now_y][now_x], temppos))
