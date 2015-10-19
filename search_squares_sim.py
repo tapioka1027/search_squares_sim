@@ -6,7 +6,7 @@ from PyQt5.QtCore import (QLineF, QPointF, QRectF, Qt, QTimer)
 from PyQt5.QtGui import (QBrush, QColor, QPainter, QIntValidator)
 from PyQt5.QtWidgets import (QApplication, QWidget, QGraphicsView, QGraphicsScene, QGraphicsItem,
                              QGridLayout, QVBoxLayout, QHBoxLayout,
-                             QLabel, QLineEdit, QPushButton)
+                             QLabel, QLineEdit, QPushButton, QComboBox)
 
 class MainWindow(QWidget):
     def __init__(self, parent=None):
@@ -33,8 +33,8 @@ class MainWindow(QWidget):
             ruleLayout.addWidget(ruleEdit, 1,7-i)
             self.ruleEdits.append(ruleEdit)
 
+        self.agentcombo = QComboBox(self)
         self.resetButton = QPushButton("&Reset")
-        self.randomInitButton = QPushButton("&Random init")
         self.nextButton = QPushButton("&Next")
         self.nextButton.clicked.connect(self.do_next)
         self.autoButton = QPushButton("&Auto")
@@ -42,11 +42,15 @@ class MainWindow(QWidget):
         self.stopButton = QPushButton("&Stop")
         self.stopButton.clicked.connect(self.stop)
         buttonLayout = QVBoxLayout()
+        buttonLayout.addWidget(self.agentcombo)
         buttonLayout.addWidget(self.resetButton)
-        buttonLayout.addWidget(self.randomInitButton)
         buttonLayout.addWidget(self.nextButton)
         buttonLayout.addWidget(self.autoButton)
         buttonLayout.addWidget(self.stopButton)
+
+        for i in ("UniformCost", "A*", "LRTA*"):
+            self.agentcombo.addItem(i)
+        self.agentcombo.activated.connect(self.reset)
 
         propertyLayout = QVBoxLayout()
         propertyLayout.setAlignment(Qt.AlignTop)
@@ -72,6 +76,9 @@ class MainWindow(QWidget):
             rule = (rule << 1) + int(n)
         self.updating_rule = True
         self.updating_rule = False
+
+    def reset(self):
+        print(self.agentcombo.currentText())
 
     def do_next(self):
         return self.searchrobot.update_map()
