@@ -49,7 +49,7 @@ class search_robot(QGraphicsItem):
 
         painter.setPen(Qt.black)
         font = painter.font()
-        font.setPointSize(20)
+        font.setPointSize(15)
         font.setBold(True)
         painter.setFont(font)
 
@@ -68,7 +68,13 @@ class search_robot(QGraphicsItem):
                     painter.drawText(self.size*x+10, self.size*y+10, self.size, self.size, self.size, 'G')
 
                 if self.agent.routemap[y][x] != -1:
-                    painter.drawText(self.size*x+10, self.size*y+10, self.size, self.size, self.size, str(self.agent.routemap[y][x]))
+                    printnum = self.agent.routemap[y][x]
+                    if printnum < 10:
+                        painter.drawText(self.size*x+16, self.size*y+10, self.size, self.size, self.size, str(printnum))
+                    elif printnum < 100:
+                        painter.drawText(self.size*x+10, self.size*y+10, self.size, self.size, self.size, str(printnum))
+                    else:
+                        painter.drawText(self.size*x+6, self.size*y+10, self.size, self.size, self.size, str(printnum))
 
     def update_map(self):
         self.agent.do_next()
