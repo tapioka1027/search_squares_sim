@@ -24,24 +24,27 @@ class UniformCostAgent():
         self.now_num = 0
         self.qu = PriorityQueue()
         self.qu.put((0, (startx, starty))) #(cost, (nowx, nowy))
+        self.mapsize_x = len(colormap[0])
+        self.mapsize_y = len(colormap)
 
         self.routemap = []
         for y in range(12):
             self.routemap.append([-1] * 17)
-        self.routemap[starty][startx] = 0
+
         self.costmap = colormap
         for y in range(len(self.costmap)):
             for x in range(len(self.costmap[0])):
                 if self.costmap[y][x] == 0:
-                    self.costmap[y][x] == 1
+                    self.costmap[y][x] = 1
                 elif self.costmap[y][x] == 0.5:
-                    self.costmap[y][x] == 3
+                    self.costmap[y][x] = 3
                 elif self.costmap[y][x] == 1:
-                    self.costmap[y][x] == -1
+                    self.costmap[y][x] = -1
         self.costmap[starty][startx] = -1
 
-        self.do_next()
-        print(self.qu.qsize())
+        for i in range(150):
+            self.do_next()
+        #print(self.now_num)
         #print(self.colormap)
 
     def do_next(self):
@@ -52,9 +55,15 @@ class UniformCostAgent():
         nowcost = tempqu[0]
         now_x = tempqu[1][0]
         now_y = tempqu[1][1]
+        print(self.costmap[now_y][now_x])
 
-        self.now_num += 1
-        self.routemap[now_y][now_x] = self.now_num
+        if nowcost > 0:
+            if self.costmap[now_y][now_x] == -1:
+                return
+            else:
+                self.costmap[now_y][now_x] = -1
+            self.now_num += 1
+            self.routemap[now_y][now_x] = self.now_num
 
         if self.searchmode == SearchList.rand:
             searchlist = random.choice(chooselist).value
@@ -70,5 +79,6 @@ class UniformCostAgent():
             elif i == 3:
                 templist.append((now_x + 1, now_y))
         for temppos in templist:
-            if temppos[0] >= 0 and temppos[1] >= 0 and self.costmap[temppos[1]][temppos[0]] != -1:
-                self.qu.put((nowcost + self.costmap[now_y][now_x], temppos))
+            if temppos[0] >= 0 and temppos[1] >= 0 and temppos[0] < self.mapsize_x and temppos[1] < self.mapsize_y and self.costmap[temppos[1]][temppos[0]] != -1:
+                print(self.costmap[temppos[1]][temppos[0]])
+                self.qu.put((nowcost + self.costmap[temppos[1]][temppos[0]], temppos))

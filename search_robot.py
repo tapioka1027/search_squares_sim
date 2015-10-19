@@ -1,4 +1,4 @@
-import random
+﻿import random
 import copy
 
 from Search_method import *
@@ -66,6 +66,12 @@ class search_robot(QGraphicsItem):
                     painter.drawText(self.size*x+10, self.size*y+10, self.size, self.size, self.size, 'S')
                 elif self.colormap[y][x] == 3:
                     painter.drawText(self.size*x+10, self.size*y+10, self.size, self.size, self.size, 'G')
+
+                if self.agent.routemap[y][x] != -1:
+                    painter.drawText(self.size*x+10, self.size*y+10, self.size, self.size, self.size, str(self.agent.routemap[y][x]))
+
+    def update_map(self):
+        self.agent.do_next()
 
     def boundingRect(self):
         return QRectF(0,0,self.width,self.height)
