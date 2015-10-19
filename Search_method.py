@@ -42,15 +42,9 @@ class UniformCostAgent():
         self.costmap[starty][startx] = -1
 
         self.do_next()
-        while(False):
-            r = self.do_next()
-            if r == -1:
-                break
-
-        #print(self.now_num)
-        #print(self.colormap)
 
     def do_next(self):
+        #state memo 1:next 0:none -1:finish
         searchlist = ()
         chooselist = [SearchList.UDLR, SearchList.LRUD, SearchList.RLDU]
         templist = []
@@ -58,11 +52,10 @@ class UniformCostAgent():
         nowcost = tempqu[0]
         now_x = tempqu[1][0]
         now_y = tempqu[1][1]
-        print(self.costmap[now_y][now_x])
 
         if nowcost > 0:
             if self.costmap[now_y][now_x] == -1:
-                return
+                return 0
             else:
                 self.costmap[now_y][now_x] = -1
             self.now_num += 1
@@ -88,3 +81,4 @@ class UniformCostAgent():
             if temppos[0] >= 0 and temppos[1] >= 0 and temppos[0] < self.mapsize_x and temppos[1] < self.mapsize_y and self.costmap[temppos[1]][temppos[0]] != -1:
                 print(self.costmap[temppos[1]][temppos[0]])
                 self.qu.put((nowcost + self.costmap[temppos[1]][temppos[0]], temppos))
+        return 1
