@@ -72,6 +72,7 @@ class search_robot(QGraphicsItem):
 
     def update_map(self):
         self.agent.do_next()
+        self.update()
 
     def boundingRect(self):
         return QRectF(0,0,self.width,self.height)

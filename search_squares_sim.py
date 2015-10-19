@@ -36,6 +36,7 @@ class MainWindow(QWidget):
         self.resetButton = QPushButton("&Reset")
         self.randomInitButton = QPushButton("&Random init")
         self.nextButton = QPushButton("&Next")
+        self.nextButton.clicked.connect(self.do_next)
         self.prevButton = QPushButton("&Prev")
         self.autoButton = QPushButton("&Auto")
         self.stopButton = QPushButton("&Stop")
@@ -71,6 +72,9 @@ class MainWindow(QWidget):
             rule = (rule << 1) + int(n)
         self.updating_rule = True
         self.updating_rule = False
+
+    def do_next(self):
+        self.searchrobot.update_map()
 
     def auto(self):
         self.timer = QTimer()

@@ -41,11 +41,12 @@ class UniformCostAgent():
                     self.costmap[y][x] = -1
         self.costmap[starty][startx] = -1
 
-        while(True):
+        self.do_next()
+        while(False):
             r = self.do_next()
             if r == -1:
                 break
-        
+
         #print(self.now_num)
         #print(self.colormap)
 
