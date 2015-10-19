@@ -16,8 +16,7 @@ class SearchList(Enum):
 
 class UniformCostAgent():
     def __init__(self, mode=SearchList.rand, colormap=[], startx=3, starty=0, goalx=13, goaly=0):
-        self.dest_x = goalx
-        self.dest_y = goaly
+        self.destpos = (goalx, goaly)
         self.searchmode = mode
 
         self.now_cost = 0
@@ -42,8 +41,11 @@ class UniformCostAgent():
                     self.costmap[y][x] = -1
         self.costmap[starty][startx] = -1
 
-        for i in range(150):
-            self.do_next()
+        while(True):
+            r = self.do_next()
+            if r == -1:
+                break
+        
         #print(self.now_num)
         #print(self.colormap)
 
@@ -64,6 +66,9 @@ class UniformCostAgent():
                 self.costmap[now_y][now_x] = -1
             self.now_num += 1
             self.routemap[now_y][now_x] = self.now_num
+
+        if tempqu[1] == self.destpos:
+            return -1
 
         if self.searchmode == SearchList.rand:
             searchlist = random.choice(chooselist).value
