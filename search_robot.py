@@ -91,8 +91,18 @@ class search_robot(QGraphicsItem):
             for i in range(len(points) - 1):
                 painter.drawLine(points[i], points[i+1])
 
-    def reset(self, str="UniformCost"):
+    def reset(self, str="UniformCost", mode="random"):
         self.agent = None
+        mode_t = SearchList.rand
+        if mode == "random":
+            pass
+        elif mode == "UpDownLeftRight":
+            mode_t = SearchList.UDLR
+        elif mode == "LeftRightUpDown":
+            mode_t = SearchList.LRUD
+        elif mode == "RightLeftDownUp":
+            mode_t = SearchList.RLDU
+            
         if str == "UniformCost":
             print(str)
             self.agent = UniformCostAgent(colormap=copy.deepcopy(self.colormap))

@@ -34,6 +34,7 @@ class MainWindow(QWidget):
             self.ruleEdits.append(ruleEdit)
 
         self.agentcombo = QComboBox(self)
+        self.searchmodecombo = QComboBox(self)
         self.resetButton = QPushButton("&Reset")
         self.resetButton.clicked.connect(self.reset)
         self.nextButton = QPushButton("&Next")
@@ -44,6 +45,7 @@ class MainWindow(QWidget):
         self.stopButton.clicked.connect(self.stop)
         buttonLayout = QVBoxLayout()
         buttonLayout.addWidget(self.agentcombo)
+        buttonLayout.addWidget(self.searchmodecombo)
         buttonLayout.addWidget(self.resetButton)
         buttonLayout.addWidget(self.nextButton)
         buttonLayout.addWidget(self.autoButton)
@@ -52,6 +54,10 @@ class MainWindow(QWidget):
         for i in ("UniformCost", "A*", "LRTA*"):
             self.agentcombo.addItem(i)
         self.agentcombo.activated.connect(self.reset)
+
+        for i in ("random", "UpDownLeftRight", "LeftRightUpDown", "RightLeftDownUp"):
+            self.searchmodecombo.addItem(i)
+        self.searchmodecombo.activated.connect(self.reset)
 
         propertyLayout = QVBoxLayout()
         propertyLayout.setAlignment(Qt.AlignTop)
@@ -80,7 +86,7 @@ class MainWindow(QWidget):
 
     def reset(self):
         self.stop()
-        self.searchrobot.reset(self.agentcombo.currentText())
+        self.searchrobot.reset(self.agentcombo.currentText(), self.searchmodecombo.currentText())
 
     def do_next(self):
         return self.searchrobot.update_map()
