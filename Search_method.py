@@ -14,6 +14,18 @@ class SearchList(Enum):
         self.p3 = p3
         self.p4 = p4
 
+class CostMap():
+    def __init__(self, colormap=[]):
+        self.costmap = colormap
+        for y in range(len(self.costmap)):
+            for x in range(len(self.costmap[0])):
+                if self.costmap[y][x] == 0:
+                    self.costmap[y][x] = 1
+                elif self.costmap[y][x] == 0.5:
+                    self.costmap[y][x] = 3
+                elif self.costmap[y][x] == 1:
+                    self.costmap[y][x] = -1
+
 class UniformCostAgent():
     def __init__(self, mode=SearchList.rand, colormap=[], startx=3, starty=0, goalx=13, goaly=0):
         self.startpos = (startx, starty)
@@ -36,15 +48,8 @@ class UniformCostAgent():
         #to trace seach route
         self.tracelist = []
 
-        self.costmap = colormap
-        for y in range(len(self.costmap)):
-            for x in range(len(self.costmap[0])):
-                if self.costmap[y][x] == 0:
-                    self.costmap[y][x] = 1
-                elif self.costmap[y][x] == 0.5:
-                    self.costmap[y][x] = 3
-                elif self.costmap[y][x] == 1:
-                    self.costmap[y][x] = -1
+        temp = CostMap(colormap)
+        self.costmap = temp.costmap
         self.costmap[starty][startx] = -1
 
         self.do_next()
