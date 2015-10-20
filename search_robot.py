@@ -76,6 +76,11 @@ class search_robot(QGraphicsItem):
                     else:
                         painter.drawText(self.size*x+6, self.size*y+10, self.size, self.size, self.size, str(printnum))
 
+    def reset(self):
+        self.agent = None
+        self.agent = UniformCostAgent(colormap=copy.deepcopy(self.colormap))
+        self.update()
+
     def update_map(self):
         r = self.agent.do_next()
         while r == 0:

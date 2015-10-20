@@ -35,6 +35,7 @@ class MainWindow(QWidget):
 
         self.agentcombo = QComboBox(self)
         self.resetButton = QPushButton("&Reset")
+        self.resetButton.clicked.connect(self.reset)
         self.nextButton = QPushButton("&Next")
         self.nextButton.clicked.connect(self.do_next)
         self.autoButton = QPushButton("&Auto")
@@ -78,6 +79,8 @@ class MainWindow(QWidget):
         self.updating_rule = False
 
     def reset(self):
+        self.stop()
+        self.searchrobot.reset()
         print(self.agentcombo.currentText())
 
     def do_next(self):
