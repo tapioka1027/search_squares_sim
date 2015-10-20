@@ -146,3 +146,73 @@ class AstarAgent(UniformCostAgent):
 
     def Heuristicfunc(self, pos):
         return math.fabs(self.destpos[0] - pos[0]) + math.fabs(self.destpos[1] - pos[1])
+
+class LRTAstarAgent():
+    def __init__(self, mode=SearchList.rand, memorymap=[], startx=3, starty=0, goalx=13, goaly=0):
+        self.nowpos = (startx, starty)
+        self.destpos = (goalx, goaly)
+        self.searchmode = mode
+        self.memorymap = memorymap
+
+        self.now_cost = 0
+        self.now_num = 0
+        self.mapsize_x = len(memorymap[0])
+        self.mapsize_y = len(memorymap)
+
+        #to trace seach route
+        self.tracelist = []
+
+        self.do_next()
+
+    def do_next(self):
+        #state memo 1:next 0:none -1:finish
+        self.tracelist.append(self.nowpos)
+        if self.nowpos == self.destpos:
+            return -1
+
+        mincost = 0
+        minpos = self.nowpos
+
+        if self.nowpos[1] - 1 >= 0:
+            movecost = self.memorymap[self.nowpos[1] - 1][self.nowpos[0]]
+            if movecost != -1:
+                mincost = movecost + self.calccost((self.nowpos[0], self.nowpos[1] - 1))
+            minpos = (self.nowpos[0], self.nowpos[1] - 1)
+        if self.nowpos[1] + 1 < self.mapsize_y:
+            movecost = self.memorymap[self.nowpos[1] + 1][self.nowpos[0]]
+            if movecost != -1:
+                if mincost == 0:
+                    mincost = movecost + self.calccost((self.nowpos[0], self.nowpos[1] - 1))
+                    minpos = (self.nowpos[0], self.nowpos[1] + 1)
+                elif mincost > movecost:
+                    mincost = movecost + self.calccost(self.nowpos)
+                    minpos = (self.nowpos[0], self.nowpos[1] + 1)
+        if self.nowpos[0] - 1 >= 0:
+            movecost = self.memorymap[self.nowpos[1]][self.nowpos[0] - 1]
+            if movecost != -1:
+                if mincost == 0:
+                    mincost = movecost + self.calccost((self.nowpos[0] - 1, self.nowpos[1]))
+                    minpos = (self.nowpos[0] + 1, self.nowpos[1])
+                elif mincost > movecost:
+                    mincost = movecost + self.calccost((self.nowpos[0] - 1, self.nowpos[1]))
+                    minpos = (self.nowpos[0] - 1, self.nowpos[1])
+        if self.nowpos[0] + 1 < self.mapsize_x:
+            movecost = self.memorymap[self.nowpos[1]][self.nowpos[0] + 1]
+            if movecost != -1:
+                if movecost == 0:
+                    mincost = movecost + self.calccost((self.nowpos[0] + 1, self.nowpos[1]))
+                    minpos = (self.nowpos[0] + 1, self.nowpos[1])
+                elif mincost > movecost:
+                    mincost = movecost + self.calccost((self.nowpos[0] + 1, self.nowpos[1]))
+                    minpos = (self.nowpos[0] + 1, self.nowpos[1])
+        self.memorymap[self.nowpos[1]][self.nowpos[0]] = mincost
+        self.nowpos = minpos
+        print((minpos, mincost))
+        return 1
+
+    def calccost(self, nextpos):
+        r = self.memorymap[nextpos[1]][nextpos[0]] + self.Heuristicfunc(nextpos)
+        return r
+
+    def Heuristicfunc(self, pos):
+        return math.fabs(self.destpos[0] - pos[0]) + math.fabs(self.destpos[1] - pos[1])

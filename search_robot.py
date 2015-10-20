@@ -18,9 +18,6 @@ class search_robot(QGraphicsItem):
         self.NH = self.height//size
         self.NW = self.width//size
         self.board = []
-        for y in range(self.NH):
-            self.board.append([0] * self.NW)
-        self.board[0][self.NW//2] = 1
         self.pos = 0
         self.is_finish = False
 
@@ -40,6 +37,8 @@ class search_robot(QGraphicsItem):
         self.colormap.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5, 0, 0, 0, 0, 0, 0])
 
         self.agent = UniformCostAgent(colormap=copy.deepcopy(self.colormap))
+        self.agenttype = "UniformCost"
+        self.memorymap = CostMap(copy.deepcopy(self.colormap)).costmap
 
     def paint(self, painter, option, widget):
         pen = painter.pen()
@@ -57,6 +56,9 @@ class search_robot(QGraphicsItem):
         font.setBold(True)
         painter.setFont(font)
 
+        pastsearchmethod =  ("UniformCost", "A*")
+        nowsearchmethod = ("LRTA*")
+
         for y in range(self.NH):
             for x in range(self.NW):
                 #if self.board[y][x] == 1:
@@ -71,7 +73,7 @@ class search_robot(QGraphicsItem):
                 elif self.colormap[y][x] == 3:
                     painter.drawText(self.size*x+10, self.size*y+10, self.size, self.size, self.size, 'G')
 
-                if self.agent.routemap[y][x] != -1 and self.agent.routemap[y][x] != 0:
+                if (self.agenttype in pastsearchmethod) and self.agent.routemap[y][x] != -1 and self.agent.routemap[y][x] != 0:
                     printnum = self.agent.routemap[y][x]
                     if printnum < 10:
                         painter.drawText(self.size*x+16, self.size*y+10, self.size, self.size, self.size, str(printnum))
@@ -80,13 +82,12 @@ class search_robot(QGraphicsItem):
                     else:
                         painter.drawText(self.size*x+6, self.size*y+10, self.size, self.size, self.size, str(printnum))
 
-        if self.is_finish:
+        if self.is_finish or (self.agenttype in nowsearchmethod):
             pen.setWidth(5)
             pen.setColor(QColor(255, 165, 0))
             painter.setPen(pen)
             points = []
             for point in self.agent.tracelist:
-                print(point)
                 points.append(QPointF(self.size*(point[0]+0.5), self.size*(point[1]+0.5)))
             for i in range(len(points) - 1):
                 painter.drawLine(points[i], points[i+1])
@@ -102,16 +103,19 @@ class search_robot(QGraphicsItem):
             mode_t = SearchList.LRUD
         elif mode == "RightLeftDownUp":
             mode_t = SearchList.RLDU
-            
+
         if str == "UniformCost":
             print(str)
+            self.agenttype = "UniformCost"
             self.agent = UniformCostAgent(colormap=copy.deepcopy(self.colormap))
         elif str == "A*":
             print(str)
+            self.agenttype = "A*"
             self.agent = AstarAgent(colormap=copy.deepcopy(self.colormap))
         elif str == "LRTA*":
             print(str)
-            self.agent = UniformCostAgent(colormap=copy.deepcopy(self.colormap))
+            self.agenttype = "LRTA*"
+            self.agent = LRTAstarAgent(memorymap=self.memorymap)
         self.update()
 
     def update_map(self):
