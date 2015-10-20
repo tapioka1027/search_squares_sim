@@ -115,7 +115,7 @@ class search_robot(QGraphicsItem):
         elif str == "LRTA*":
             print(str)
             self.agenttype = "LRTA*"
-            self.agent = LRTAstarAgent(memorymap=self.memorymap)
+            self.agent = LRTAstarAgent(colormap=copy.deepcopy(self.colormap), memorymap=self.memorymap)
         self.update()
 
     def update_map(self):

@@ -148,10 +148,12 @@ class AstarAgent(UniformCostAgent):
         return math.fabs(self.destpos[0] - pos[0]) + math.fabs(self.destpos[1] - pos[1])
 
 class LRTAstarAgent():
-    def __init__(self, mode=SearchList.rand, memorymap=[], startx=3, starty=0, goalx=13, goaly=0):
+    def __init__(self, mode=SearchList.rand, colormap=[], memorymap=[], startx=3, starty=0, goalx=13, goaly=0):
         self.nowpos = (startx, starty)
         self.destpos = (goalx, goaly)
         self.searchmode = mode
+        self.costmap = CostMap(colormap).costmap
+        self.costmap[starty][startx] = 1
         self.memorymap = memorymap
 
         self.now_cost = 0
@@ -174,44 +176,63 @@ class LRTAstarAgent():
         minpos = self.nowpos
 
         if self.nowpos[1] - 1 >= 0:
-            movecost = self.memorymap[self.nowpos[1] - 1][self.nowpos[0]]
+            movecost = self.costmap[self.nowpos[1] - 1][self.nowpos[0]]
             if movecost != -1:
                 mincost = movecost + self.calccost((self.nowpos[0], self.nowpos[1] - 1))
+                print(("up", mincost))
             minpos = (self.nowpos[0], self.nowpos[1] - 1)
         if self.nowpos[1] + 1 < self.mapsize_y:
-            movecost = self.memorymap[self.nowpos[1] + 1][self.nowpos[0]]
+            movecost = self.costmap[self.nowpos[1] + 1][self.nowpos[0]]
             if movecost != -1:
+                movecost += self.calccost((self.nowpos[0], self.nowpos[1] + 1))
                 if mincost == 0:
-                    mincost = movecost + self.calccost((self.nowpos[0], self.nowpos[1] - 1))
+                    mincost = movecost
                     minpos = (self.nowpos[0], self.nowpos[1] + 1)
-                elif mincost > movecost:
-                    mincost = movecost + self.calccost(self.nowpos)
-                    minpos = (self.nowpos[0], self.nowpos[1] + 1)
+                    print(("down", mincost))
+                elif mincost >= movecost:
+                    if mincost > movecost or random.random() > 0.5:
+                        mincost = movecost
+                        minpos = (self.nowpos[0], self.nowpos[1] + 1)
+                        print(("down", mincost))
         if self.nowpos[0] - 1 >= 0:
-            movecost = self.memorymap[self.nowpos[1]][self.nowpos[0] - 1]
+            movecost = self.costmap[self.nowpos[1]][self.nowpos[0] - 1]
             if movecost != -1:
+                movecost += self.calccost((self.nowpos[0] - 1, self.nowpos[1]))
                 if mincost == 0:
-                    mincost = movecost + self.calccost((self.nowpos[0] - 1, self.nowpos[1]))
-                    minpos = (self.nowpos[0] + 1, self.nowpos[1])
-                elif mincost > movecost:
-                    mincost = movecost + self.calccost((self.nowpos[0] - 1, self.nowpos[1]))
+                    mincost = movecost
                     minpos = (self.nowpos[0] - 1, self.nowpos[1])
+                    print(("left", mincost))
+                elif mincost >= movecost:
+                    if mincost > movecost or random.random() > 0.5:
+                        mincost = movecost
+                        minpos = (self.nowpos[0] - 1, self.nowpos[1])
+                        print(("left", mincost))
         if self.nowpos[0] + 1 < self.mapsize_x:
-            movecost = self.memorymap[self.nowpos[1]][self.nowpos[0] + 1]
+            movecost = self.costmap[self.nowpos[1]][self.nowpos[0] + 1]
             if movecost != -1:
+                movecost += self.calccost((self.nowpos[0] + 1, self.nowpos[1]))
                 if movecost == 0:
-                    mincost = movecost + self.calccost((self.nowpos[0] + 1, self.nowpos[1]))
+                    mincost = movecost
                     minpos = (self.nowpos[0] + 1, self.nowpos[1])
-                elif mincost > movecost:
-                    mincost = movecost + self.calccost((self.nowpos[0] + 1, self.nowpos[1]))
-                    minpos = (self.nowpos[0] + 1, self.nowpos[1])
+                    print(("right", mincost))
+                elif mincost >= movecost:
+                    if mincost > movecost or random.random():
+                        mincost = movecost
+                        minpos = (self.nowpos[0] + 1, self.nowpos[1])
+                        print(("right", mincost))
         self.memorymap[self.nowpos[1]][self.nowpos[0]] = mincost
         self.nowpos = minpos
-        print((minpos, mincost))
+        print(("end", minpos, mincost))
+        print(self.memorymap)
+        print(self.tracelist)
         return 1
 
     def calccost(self, nextpos):
-        r = self.memorymap[nextpos[1]][nextpos[0]] + self.Heuristicfunc(nextpos)
+        if nextpos not in self.tracelist:
+            print(("heulistic", nextpos))
+            r = self.Heuristicfunc(nextpos)
+        else:
+            r = self.memorymap[nextpos[1]][nextpos[0]]
         return r
 
     def Heuristicfunc(self, pos):
