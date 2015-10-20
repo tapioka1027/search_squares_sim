@@ -80,8 +80,7 @@ class MainWindow(QWidget):
 
     def reset(self):
         self.stop()
-        self.searchrobot.reset()
-        print(self.agentcombo.currentText())
+        self.searchrobot.reset(self.agentcombo.currentText())
 
     def do_next(self):
         return self.searchrobot.update_map()
