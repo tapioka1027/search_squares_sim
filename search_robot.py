@@ -83,7 +83,7 @@ class search_robot(QGraphicsItem):
             self.agent = UniformCostAgent(colormap=copy.deepcopy(self.colormap))
         elif str == "A*":
             print(str)
-            self.agent = UniformCostAgent(colormap=copy.deepcopy(self.colormap))
+            self.agent = AstarAgent(colormap=copy.deepcopy(self.colormap))
         elif str == "LRTA*":
             print(str)
             self.agent = UniformCostAgent(colormap=copy.deepcopy(self.colormap))

@@ -1,4 +1,4 @@
-﻿import random
+﻿import random, math
 
 from queue import PriorityQueue
 from enum import Enum
@@ -80,9 +80,19 @@ class UniformCostAgent():
                 templist.append((now_x + 1, now_y))
         for temppos in templist:
             if temppos[0] >= 0 and temppos[1] >= 0 and temppos[0] < self.mapsize_x and temppos[1] < self.mapsize_y and self.costmap[temppos[1]][temppos[0]] != -1:
-                print(self.costmap[temppos[1]][temppos[0]])
                 self.qu.put((self.calccost(nowcost, temppos), temppos))
         return 1
 
     def calccost(self, nowcost, nextpos):
-        return nowcost + self.costmap[nextpos[1]][nextpos[0]]
+        r =  nowcost + self.costmap[nextpos[1]][nextpos[0]]
+        print(r)
+        return r
+
+class AstarAgent(UniformCostAgent):
+    def calccost(self, nowcost, nextpos):
+        r = nowcost + self.costmap[nextpos[1]][nextpos[0]] + self.Heuristicfunc(nextpos)
+        print(r)
+        return r
+
+    def Heuristicfunc(self, pos):
+        return math.fabs(self.destpos[0] - pos[0]) + math.fabs(self.destpos[1] - pos[1])
