@@ -71,7 +71,7 @@ class search_robot(QGraphicsItem):
                 elif self.colormap[y][x] == 3:
                     painter.drawText(self.size*x+10, self.size*y+10, self.size, self.size, self.size, 'G')
 
-                if self.agent.routemap[y][x] != -1:
+                if self.agent.routemap[y][x] != -1 and self.agent.routemap[y][x] != 0:
                     printnum = self.agent.routemap[y][x]
                     if printnum < 10:
                         painter.drawText(self.size*x+16, self.size*y+10, self.size, self.size, self.size, str(printnum))
