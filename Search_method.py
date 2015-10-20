@@ -23,7 +23,7 @@ class UniformCostAgent():
         self.now_cost = 0
         self.now_num = 0
         self.qu = PriorityQueue()
-        self.qu.put((0, (startx, starty))) #(cost, (nowx, nowy))
+        self.qu.put((0, (startx, starty), 0)) #(cost, (nowx, nowy))
         self.mapsize_x = len(colormap[0])
         self.mapsize_y = len(colormap)
 
@@ -55,11 +55,11 @@ class UniformCostAgent():
         chooselist = [SearchList.UDLR, SearchList.LRUD, SearchList.RLDU]
         templist = []
         tempqu = self.qu.get()
-        nowcost = tempqu[0]
+        routecost = tempqu[2]
         now_x = tempqu[1][0]
         now_y = tempqu[1][1]
 
-        if nowcost > 0:
+        if routecost > 0:
             if self.costmap[now_y][now_x] == -1:
                 return 0
             else:
@@ -86,11 +86,11 @@ class UniformCostAgent():
                 templist.append((now_x + 1, now_y))
         for temppos in templist:
             if temppos[0] >= 0 and temppos[1] >= 0 and temppos[0] < self.mapsize_x and temppos[1] < self.mapsize_y and self.costmap[temppos[1]][temppos[0]] != -1:
-                self.qu.put((self.calccost(nowcost, temppos), temppos))
+                self.qu.put((self.calccost(routecost, temppos), temppos, routecost + self.costmap[temppos[1]][temppos[0]]))
         return 1
 
-    def calccost(self, nowcost, nextpos):
-        r =  nowcost + self.costmap[nextpos[1]][nextpos[0]]
+    def calccost(self, routecost, nextpos):
+        r = routecost + self.costmap[nextpos[1]][nextpos[0]]
         print(r)
         return r
 
@@ -101,16 +101,13 @@ class UniformCostAgent():
         minpos = nowpos
         while nowpos != self.startpos:
             self.tracelist.append(nowpos)
-            print("call")
             if nowpos[1] - 1 >= 0:
                 num = self.routemap[nowpos[1] - 1][nowpos[0]]
-                print(num)
                 if num != -1:
                     minnum = num
                 minpos = (nowpos[0], nowpos[1] - 1)
             if nowpos[1] + 1 < self.mapsize_y:
                 num = self.routemap[nowpos[1] + 1][nowpos[0]]
-                print(num)
                 if num != -1:
                     if minnum == 0:
                         minnum = num
@@ -119,7 +116,6 @@ class UniformCostAgent():
                         minpos = (nowpos[0], nowpos[1] + 1)
             if nowpos[0] - 1 >= 0:
                 num = self.routemap[nowpos[1]][nowpos[0] - 1]
-                print(num)
                 if num != -1:
                     if minnum == 0:
                         minnum = num
@@ -128,7 +124,6 @@ class UniformCostAgent():
                         minpos = (nowpos[0] - 1, nowpos[1])
             if nowpos[0] + 1 < self.mapsize_x:
                 num = self.routemap[nowpos[1]][nowpos[0] + 1]
-                print(num)
                 if num != -1:
                     if minnum == 0:
                         minnum = num
@@ -136,12 +131,11 @@ class UniformCostAgent():
                     elif minnum > num:
                         minnum = num
                         minpos = (nowpos[0] + 1, nowpos[1])
-            print(nowpos)
             nowpos = minpos
 
 class AstarAgent(UniformCostAgent):
-    def calccost(self, nowcost, nextpos):
-        r = nowcost + self.costmap[nextpos[1]][nextpos[0]] + self.Heuristicfunc(nextpos)
+    def calccost(self, routecost, nextpos):
+        r = routecost + self.costmap[nextpos[1]][nextpos[0]] + self.Heuristicfunc(nextpos)
         print(r)
         return r
 
