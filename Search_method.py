@@ -27,9 +27,16 @@ class UniformCostAgent():
         self.mapsize_x = len(colormap[0])
         self.mapsize_y = len(colormap)
 
+        #to store search number
         self.routemap = []
         for y in range(12):
             self.routemap.append([-1] * 17)
+
+        #to trace seach route
+        self.tracemap = []
+        for y in range(12):
+            self.tracemap.append([None] * 17)
+        self.tracelist = []
 
         self.costmap = colormap
         for y in range(len(self.costmap)):
@@ -63,6 +70,7 @@ class UniformCostAgent():
             self.routemap[now_y][now_x] = self.now_num
 
         if tempqu[1] == self.destpos:
+            self.traceroute()
             return -1
 
         if self.searchmode == SearchList.rand:
@@ -81,12 +89,22 @@ class UniformCostAgent():
         for temppos in templist:
             if temppos[0] >= 0 and temppos[1] >= 0 and temppos[0] < self.mapsize_x and temppos[1] < self.mapsize_y and self.costmap[temppos[1]][temppos[0]] != -1:
                 self.qu.put((self.calccost(nowcost, temppos), temppos))
+                self.tracemap[temppos[1]][temppos[0]] = (now_x, now_y)
         return 1
 
     def calccost(self, nowcost, nextpos):
         r =  nowcost + self.costmap[nextpos[1]][nextpos[0]]
         print(r)
         return r
+
+    def traceroute(self):
+        self.tracelist.append(self.tracemap[self.destpos[1]][self.destpos[0]])
+        nowpos = self.tracemap[self.destpos[1]][self.destpos[0]]
+        while True:
+            nowpos = self.tracemap[nowpos[1]][nowpos[0]]
+            if nowpos is None: break
+            self.tracelist.append(nowpos)
+
 
 class AstarAgent(UniformCostAgent):
     def calccost(self, nowcost, nextpos):

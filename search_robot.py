@@ -22,6 +22,7 @@ class search_robot(QGraphicsItem):
             self.board.append([0] * self.NW)
         self.board[0][self.NW//2] = 1
         self.pos = 0
+        self.is_finish = False
 
         #make map
         self.colormap = []
@@ -41,6 +42,9 @@ class search_robot(QGraphicsItem):
         self.agent = UniformCostAgent(colormap=copy.deepcopy(self.colormap))
 
     def paint(self, painter, option, widget):
+        pen = painter.pen()
+        pen.setWidth(1)
+        painter.setPen(pen)
         painter.setPen(QColor(220,220,220))
         for y in range(self.NH + 1):
             painter.drawLine(0, y*self.size, self.width, y*self.size)
@@ -76,6 +80,17 @@ class search_robot(QGraphicsItem):
                     else:
                         painter.drawText(self.size*x+6, self.size*y+10, self.size, self.size, self.size, str(printnum))
 
+        if self.is_finish:
+            pen.setWidth(5)
+            pen.setColor(QColor(255, 165, 0))
+            painter.setPen(pen)
+            points = []
+            for point in self.agent.tracelist:
+                print(point)
+                points.append(QPointF(self.size*(point[0]+0.5), self.size*(point[1]+0.5)))
+            for i in range(len(points) - 1):
+                painter.drawLine(points[i], points[i+1])
+
     def reset(self, str="UniformCost"):
         self.agent = None
         if str == "UniformCost":
@@ -98,6 +113,7 @@ class search_robot(QGraphicsItem):
                 self.update()
                 return True
             else:
+                self.is_finish = True
                 self.update()
                 return False
 

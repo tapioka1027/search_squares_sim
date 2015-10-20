@@ -87,7 +87,7 @@ class MainWindow(QWidget):
 
     def auto(self):
         self.timer = QTimer()
-        self.timer.setInterval(100)
+        self.timer.setInterval(10)
         self.timer.timeout.connect(self.timeout)
         self.timer.start()
 
