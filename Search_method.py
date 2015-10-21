@@ -164,7 +164,7 @@ class LRTAstarAgent():
         #to trace seach route
         self.tracelist = []
 
-        self.do_next()
+        #self.do_next()
 
     def do_next(self):
         #state memo 1:next 0:none -1:finish
@@ -211,12 +211,12 @@ class LRTAstarAgent():
             movecost = self.costmap[self.nowpos[1]][self.nowpos[0] + 1]
             if movecost != -1:
                 movecost += self.calccost((self.nowpos[0] + 1, self.nowpos[1]))
-                if movecost == 0:
+                if mincost == 0:
                     mincost = movecost
                     minpos = (self.nowpos[0] + 1, self.nowpos[1])
                     print(("right", mincost))
                 elif mincost >= movecost:
-                    if mincost > movecost or random.random():
+                    if mincost > movecost or random.random() > 0.5:
                         mincost = movecost
                         minpos = (self.nowpos[0] + 1, self.nowpos[1])
                         print(("right", mincost))
@@ -224,7 +224,7 @@ class LRTAstarAgent():
         self.nowpos = minpos
         print(("end", minpos, mincost))
         print(self.memorymap)
-        print(self.tracelist)
+        #print(self.tracelist)
         return 1
 
     def calccost(self, nextpos):
