@@ -41,6 +41,8 @@ class MainWindow(QWidget):
         self.nextButton.clicked.connect(self.do_next)
         self.autoButton = QPushButton("&Auto")
         self.autoButton.clicked.connect(self.auto)
+        self.loopButton = QPushButton("&Loop")
+        self.loopButton.clicked.connect(self.loop)
         self.stopButton = QPushButton("&Stop")
         self.stopButton.clicked.connect(self.stop)
         buttonLayout = QVBoxLayout()
@@ -49,6 +51,7 @@ class MainWindow(QWidget):
         buttonLayout.addWidget(self.resetButton)
         buttonLayout.addWidget(self.nextButton)
         buttonLayout.addWidget(self.autoButton)
+        buttonLayout.addWidget(self.loopButton)
         buttonLayout.addWidget(self.stopButton)
 
         for i in ("UniformCost", "A*", "LRTA*"):
@@ -73,6 +76,7 @@ class MainWindow(QWidget):
         self.setWindowTitle("Seach Squares Simulation")
         self.updating_rule = False
         self.timer = None
+        self.loopflag = False
 
     def update_rule(self):
         if self.updating_rule: return
@@ -85,7 +89,8 @@ class MainWindow(QWidget):
         self.updating_rule = False
 
     def reset(self):
-        self.stop()
+        if not self.loopflag:
+            self.stop()
         self.searchrobot.reset(self.agentcombo.currentText(), self.searchmodecombo.currentText())
 
     def do_next(self):
@@ -97,15 +102,24 @@ class MainWindow(QWidget):
         self.timer.timeout.connect(self.timeout)
         self.timer.start()
 
+    def loop(self):
+        self.loopflag = True
+        self.auto()
+
+
     def timeout(self):
         r = self.do_next()
         if not r:
-            self.stop()
+            if self.loopflag:
+                self.reset()
+            else:
+                self.stop()
 
     def stop(self):
         if self.timer:
             self.timer.stop()
             self.timer = None
+            self.loopflag = False
 
 if __name__ == '__main__':
     import sys
