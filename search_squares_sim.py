@@ -5,7 +5,7 @@ from search_robot import *
 from PyQt5.QtCore import (QLineF, QPointF, QRectF, Qt, QTimer)
 from PyQt5.QtGui import (QBrush, QColor, QPainter, QIntValidator)
 from PyQt5.QtWidgets import (QApplication, QWidget, QGraphicsView, QGraphicsScene, QGraphicsItem,
-                             QGridLayout, QVBoxLayout, QHBoxLayout,
+                             QGridLayout, QVBoxLayout, QHBoxLayout, QTextBrowser,
                              QLabel, QLineEdit, QPushButton, QComboBox)
 
 class MainWindow(QWidget):
@@ -61,9 +61,15 @@ class MainWindow(QWidget):
             self.searchmodecombo.addItem(i)
         self.searchmodecombo.activated.connect(self.reset)
 
+        self.costtext = QLabel("0")
+        showcostLayout = QHBoxLayout()
+        showcostLayout.addWidget(QLabel("Last cost:"))
+        showcostLayout.addWidget(self.costtext)
+
         propertyLayout = QVBoxLayout()
         propertyLayout.setAlignment(Qt.AlignTop)
         propertyLayout.addLayout(buttonLayout)
+        propertyLayout.addLayout(showcostLayout)
         propertyLayout.addWidget(self.graphicsView2)
 
         mainLayout = QHBoxLayout()
@@ -112,6 +118,7 @@ class MainWindow(QWidget):
 
     def timeout(self):
         r = self.do_next()
+        self.costtext.setText(str(self.searchrobot.lastcount))
         if not r:
             if self.loopflag:
                 self.reset()
