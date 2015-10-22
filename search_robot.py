@@ -39,6 +39,7 @@ class search_robot(QGraphicsItem):
         self.agenttype = "UniformCost"
         self.memorymap = CostMap(copy.deepcopy(self.colormap)).costmap
         self.costmap = CostMap(copy.deepcopy(self.colormap)).costmap
+        self.generation = 0
 
     def paint(self, painter, option, widget):
         pen = painter.pen()
@@ -116,10 +117,12 @@ class search_robot(QGraphicsItem):
             print(str)
             self.agenttype = "LRTA*"
             self.agent = LRTAstarAgent(colormap=copy.deepcopy(self.colormap), memorymap=self.memorymap)
+            self.generation += 1
         self.update()
 
     def resetmemory(self):
         self.memorymap = CostMap(copy.deepcopy(self.colormap)).costmap
+        self.generation = 0
         self.update()
 
     def update_map(self):

@@ -72,10 +72,16 @@ class MainWindow(QWidget):
         showcostLayout.addWidget(QLabel("Last cost:"))
         showcostLayout.addWidget(self.costtext)
 
+        self.genetext = QLabel("0")
+        showgeneLayout = QHBoxLayout()
+        showgeneLayout.addWidget(QLabel("Generation:"))
+        showgeneLayout.addWidget(self.genetext)
+
         propertyLayout = QVBoxLayout()
         propertyLayout.setAlignment(Qt.AlignTop)
         propertyLayout.addLayout(buttonLayout)
         propertyLayout.addLayout(showcostLayout)
+        propertyLayout.addLayout(showgeneLayout)
 
         mainLayout = QHBoxLayout()
         mainLayout.setAlignment(Qt.AlignTop)
@@ -128,6 +134,7 @@ class MainWindow(QWidget):
     def timeout(self):
         r = self.do_next()
         self.costtext.setText(str(self.searchrobot.lastcount))
+        self.genetext.setText(str(self.searchrobot.generation))
         if not r:
             if self.loopflag:
                 self.reset()
