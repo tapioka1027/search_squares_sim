@@ -14,7 +14,7 @@ class MainWindow(QWidget):
 
         self.graphicsView = QGraphicsView()
         scene = QGraphicsScene(self.graphicsView)
-        scene.setSceneRect(0, 0, 680, 480)
+        scene.setSceneRect(-10, 0, 700, 480)
         self.graphicsView.setScene(scene)
         self.searchrobot = search_robot(680,480, 40)
         scene.addItem(self.searchrobot)
@@ -25,20 +25,7 @@ class MainWindow(QWidget):
         self.graphicsView2.setScene(gscene)
         #gscene.addItem(self.searchrobot)
 
-        validator = QIntValidator(0,1)
-        ruleLayout = QGridLayout()
-        ruleLayout.setAlignment(Qt.AlignTop)
-        self.ruleEdits = []
-        for i in range(7,-1,-1):
-            ruleEdit = QLineEdit()
-            ruleEdit.setValidator(validator)
-            ruleEdit.setText("0")
-            ruleEdit.setFixedWidth(30)
-            ruleEdit.textEdited.connect(self.update_rule)
-            ruleLayout.addWidget(QLabel("{0:03b}".format(i)), 0, 7-i)
-            ruleLayout.addWidget(ruleEdit, 1,7-i)
-            self.ruleEdits.append(ruleEdit)
-
+        self.intervalcombo = QComboBox(self)
         self.agentcombo = QComboBox(self)
         self.searchmodecombo = QComboBox(self)
         self.resetButton = QPushButton("&Reset")
@@ -52,6 +39,7 @@ class MainWindow(QWidget):
         self.stopButton = QPushButton("&Stop")
         self.stopButton.clicked.connect(self.stop)
         buttonLayout = QVBoxLayout()
+        buttonLayout.addWidget(self.intervalcombo)
         buttonLayout.addWidget(self.agentcombo)
         buttonLayout.addWidget(self.searchmodecombo)
         buttonLayout.addWidget(self.resetButton)
@@ -59,6 +47,11 @@ class MainWindow(QWidget):
         buttonLayout.addWidget(self.autoButton)
         buttonLayout.addWidget(self.loopButton)
         buttonLayout.addWidget(self.stopButton)
+
+        self.interval = 5
+        for i in ("5", "10", "30", "50", "100"):
+            self.intervalcombo.addItem(i)
+        self.intervalcombo.activated.connect(self.set_interval)
 
         for i in ("UniformCost", "A*", "LRTA*"):
             self.agentcombo.addItem(i)
@@ -70,7 +63,6 @@ class MainWindow(QWidget):
 
         propertyLayout = QVBoxLayout()
         propertyLayout.setAlignment(Qt.AlignTop)
-        propertyLayout.addLayout(ruleLayout)
         propertyLayout.addLayout(buttonLayout)
         propertyLayout.addWidget(self.graphicsView2)
 
@@ -80,7 +72,7 @@ class MainWindow(QWidget):
         mainLayout.addLayout(propertyLayout)
 
         self.setLayout(mainLayout)
-        self.resize(1000,600)
+        #self.resize(1000,600)
         self.setWindowTitle("Seach Squares Simulation")
         self.updating_rule = False
         self.timer = None
@@ -96,6 +88,10 @@ class MainWindow(QWidget):
         self.updating_rule = True
         self.updating_rule = False
 
+    def set_interval(self):
+        self.stop()
+        self.interval = int(self.intervalcombo.currentText())
+
     def reset(self):
         if not self.loopflag:
             self.stop()
@@ -106,14 +102,13 @@ class MainWindow(QWidget):
 
     def auto(self):
         self.timer = QTimer()
-        self.timer.setInterval(10)
+        self.timer.setInterval(self.interval)
         self.timer.timeout.connect(self.timeout)
         self.timer.start()
 
     def loop(self):
         self.loopflag = True
         self.auto()
-
 
     def timeout(self):
         r = self.do_next()

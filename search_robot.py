@@ -137,7 +137,7 @@ class search_robot(QGraphicsItem):
         self.lastcount = 0
         for point in self.agent.tracelist:
             self.lastcount += self.costmap[point[1]][point[0]]
-            self.lastcount -= 1 #start position
+        self.lastcount -= 1 #start position
         print(self.lastcount)
 
     def boundingRect(self):
