@@ -119,6 +119,10 @@ class search_robot(QGraphicsItem):
             self.agent = LRTAstarAgent(colormap=copy.deepcopy(self.colormap), memorymap=self.memorymap)
         self.update()
 
+    def resetmemory(self):
+        self.memorymap = CostMap(copy.deepcopy(self.colormap)).costmap
+        self.update()
+
     def update_map(self):
         r = self.agent.do_next()
         while r == 0:

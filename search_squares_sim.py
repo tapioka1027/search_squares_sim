@@ -36,6 +36,8 @@ class MainWindow(QWidget):
         self.autoButton.clicked.connect(self.auto)
         self.loopButton = QPushButton("&Loop")
         self.loopButton.clicked.connect(self.loop)
+        self.resetmemButton = QPushButton("&ResetMemory")
+        self.resetmemButton.clicked.connect(self.resetmemory)
         self.stopButton = QPushButton("&Stop")
         self.stopButton.clicked.connect(self.stop)
         buttonLayout = QVBoxLayout()
@@ -46,6 +48,7 @@ class MainWindow(QWidget):
         buttonLayout.addWidget(self.nextButton)
         buttonLayout.addWidget(self.autoButton)
         buttonLayout.addWidget(self.loopButton)
+        buttonLayout.addWidget(self.resetmemButton)
         buttonLayout.addWidget(self.stopButton)
 
         self.interval = 5
@@ -115,6 +118,11 @@ class MainWindow(QWidget):
     def loop(self):
         self.loopflag = True
         self.auto()
+
+    def resetmemory(self):
+        self.stop()
+        self.reset()
+        self.searchrobot.resetmemory()
 
     def timeout(self):
         r = self.do_next()
