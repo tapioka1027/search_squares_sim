@@ -19,6 +19,12 @@ class MainWindow(QWidget):
         self.searchrobot = search_robot(680,480, 40)
         scene.addItem(self.searchrobot)
 
+        self.graphicsView2 = QGraphicsView()
+        gscene = QGraphicsScene(self.graphicsView2)
+        gscene.setSceneRect(0, 0, 300, 300)
+        self.graphicsView2.setScene(gscene)
+        #gscene.addItem(self.searchrobot)
+
         validator = QIntValidator(0,1)
         ruleLayout = QGridLayout()
         ruleLayout.setAlignment(Qt.AlignTop)
@@ -66,6 +72,7 @@ class MainWindow(QWidget):
         propertyLayout.setAlignment(Qt.AlignTop)
         propertyLayout.addLayout(ruleLayout)
         propertyLayout.addLayout(buttonLayout)
+        propertyLayout.addWidget(self.graphicsView2)
 
         mainLayout = QHBoxLayout()
         mainLayout.setAlignment(Qt.AlignTop)
@@ -73,6 +80,7 @@ class MainWindow(QWidget):
         mainLayout.addLayout(propertyLayout)
 
         self.setLayout(mainLayout)
+        self.resize(1000,600)
         self.setWindowTitle("Seach Squares Simulation")
         self.updating_rule = False
         self.timer = None
