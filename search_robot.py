@@ -17,7 +17,6 @@ class search_robot(QGraphicsItem):
         self.size = size
         self.NH = self.height//size
         self.NW = self.width//size
-        self.pos = 0
         self.is_finish = False
         self.lastcount = 0
 
