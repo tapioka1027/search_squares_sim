@@ -19,7 +19,7 @@ class CostMap():
         self.costmap = colormap
         for y in range(len(self.costmap)):
             for x in range(len(self.costmap[0])):
-                if self.costmap[y][x] == 0:
+                if self.costmap[y][x] == 0 or self.costmap[y][x] == 3 or self.costmap[y][x] == 2:
                     self.costmap[y][x] = 1
                 elif self.costmap[y][x] == 0.5:
                     self.costmap[y][x] = 3

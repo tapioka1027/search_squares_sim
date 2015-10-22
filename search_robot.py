@@ -17,9 +17,9 @@ class search_robot(QGraphicsItem):
         self.size = size
         self.NH = self.height//size
         self.NW = self.width//size
-        self.board = []
         self.pos = 0
         self.is_finish = False
+        self.lastcount = 0
 
         #make map
         self.colormap = []
@@ -39,6 +39,7 @@ class search_robot(QGraphicsItem):
         self.agent = UniformCostAgent(colormap=copy.deepcopy(self.colormap))
         self.agenttype = "UniformCost"
         self.memorymap = CostMap(copy.deepcopy(self.colormap)).costmap
+        self.costmap = CostMap(copy.deepcopy(self.colormap)).costmap
 
     def paint(self, painter, option, widget):
         pen = painter.pen()
@@ -129,7 +130,15 @@ class search_robot(QGraphicsItem):
             else:
                 self.is_finish = True
                 self.update()
+                self.update_count()
                 return False
+
+    def update_count(self):
+        self.lastcount = 0
+        for point in self.agent.tracelist:
+            self.lastcount += self.costmap[point[1]][point[0]]
+            self.lastcount -= 1 #start position
+        print(self.lastcount)
 
     def boundingRect(self):
         return QRectF(0,0,self.width,self.height)
